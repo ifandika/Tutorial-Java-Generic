@@ -1,0 +1,5 @@
+# for all .class
+*/*.class
+
+*/*.html
+*.html
