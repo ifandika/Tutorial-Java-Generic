@@ -131,6 +131,81 @@ Ini berati Box adalah tipe raw dari Box<T>, jika non-generic class atau interfac
 Pada Generic, simbol tanda tanya (?) disebut ***Wildcards*** yang berati tipe tidak diketahui. Wildcards dapat dipakai di tipe parameter, field, tipe kembalian.  
 
 #### Upper Bounded Wildcards
+Membatasi tipe data tertentu pada tipe parameter, semisal tipe data bilangan seperti Integer, Double, dll. Untuk deklarasi upper-bounded wildcards dengan simbol (?) diikuti ***extends*** lalu nama class/interface. Untuk formatnya:
+```Java
+	...<? extends class/interface> ...
+```
+Sebagai contoh kita buat fungsi penjumlahan dari List tipe Number.
+```Java
+public double sumOfList(List<? extends Number) list) {
+	double result = 0.0d;
+	for(Number e : list) {
+		result += e;
+	}
+	return result;
+}
+```
+Lalu untuk demonya:
+```Java
+List<Integer> listA = List.of(100, 200, 300);
+List<Double> listB = List.of(10.10, 20.5, 1.5);
+
+System.out.println(sumOfList(listA));
+System.out.println(sumOfList(listB));
+```
+Output:
+```Bash
+600
+32,1
+```
+#### Unbounded Wildcards
+Digunakan ketika ingin menerima tipe data yang umum seperti objek, gunakan simbol (?)
+pada tipe generic maka disebut unknown type/tipe tidak diketahui. Ini sering
+diimplementasikan pada fungsi yang bersifat umum, seperti fungsi print data list.  
+Contoh membuat fungsi menampilkan data list dengan tipe data parameter Object.  
+```Java
+	public static void printList(List<Object> list) {
+		for(Object e : list) {
+			System.out.print(e+" ");
+		}
+		System.out.println();
+	}
+```
+Otomatis fungsi tersebut bisa berkerja untuk tipe data ***Object*** dan ***Subtype*** nya.
+Tetapi yang jadi masalah ketika kita masukan tipe Object seperti ***Integer***, ***Double***,
+***String***, dll, karena bukan ***subtype*** dari ***Object***. Maka ganti dengan (?) otomatis
+tipe data jenis apapaun akan bisa diterima.  
+```Java
+	public static void printList(List<?> list) {
+		for(Object e : list) {
+			System.out.print(e+" ");
+		}
+		System.out.println();
+	}
+```
+Maka fungsi bisa menerima tipe data selain ***Object***.  
+```Java
+	List<String> lisA = List.of("Joni", "Frank", "Jammy");
+	List<Integer> listB = List.of(100,200,300,400);
+	
+	printList(listA);
+	printList(listB);
+```
+Output:
+```Terminal
+	Joni Frank Jammy
+	100 200 300 400
+```
+
+
+#### Lower Bounded Wildcards
+
+#### Wildcards and Subtyping
+Wildcards juga dapat digunakan untuk membuat hubungan antara ***class*** & ***interface***.
+Sebagai contoh  
+
+- Membuat interface A  
+- Membuat class B dengan extends interface A  
 
 ## Tipe Erasure
 Generic diperkenalkan pada Java guna mendukung kompilasi dan generic programming. Hal yang terjadi pada kompilasi ketika menggunakan generic.
