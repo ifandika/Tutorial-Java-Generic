@@ -1,78 +1,41 @@
 # Tutorial Java Generic
 #
-## 1. Pengertian
-Java Generic adalah kemampuan dalam bahasa pemprograman Java untuk membuat tipe parameter yang umum.  
-
-#### 1.2 Penulisan Tipe Generic
-Penulisan Tipe Generic menggunakan.  
-
-- E : Elemen
-- K : Key/Kunci
-- N : Number/Bilangan
-- T : Type/Tipe
-- V : Value/Nilai
-- dll  
-
-## 2. Tipe Generic
-Tipe Generic disini adalah tipe generic class atau interface. Contoh dengan kelas Box.  
-
-#### 2.1 Kelas Box
-Membuat kelas Box tanpa menggunakan Generic & mempunyai beberapa fungsi seperti get,set, add.
-
+#
+## 1. Pendahuluan
+Java Generic adalah kemampuan dalam bahasa pemprograman Java untuk membuat tipe parameter yang umum. Sederhananya tipe yang bisa menampung data apa saja. Semisal kita membuat class Box yang bisa menampung nilai Integer.
 ```Java
-/**
- * Kelas Box tanpa Generic
- * Kelas Box berisi Array Objek, dapat menyimpan data apapun
- */
 public class Box {
-	public Object[] obj;
-	private int index = 0;
+	private Integer int;
 
-	public Box() {
-		obj = new Object[5];
+	public Box(Integer i) {
+		int = i;
 	}
 
-	public void set(Object[] o) {
+	public Integer get() {
+		return int;
+	}
+	...
+}
+```
+Semisal kita ingin class Box yang menyimpan data Double, String, dll, maka kita buat satu-satu atau dengan menggunakan tipe Object.
+```Java
+public class Box {
+	private Object obj;
+
+	public Box(Object o) {
 		obj = o;
 	}
 
-	public void add(Object o) {
-		obj[index++] = o;
+	public Object get() {
+		return obj;
 	}
-
-	public Object get(int index) {
-		return obj[index];
-	}
-}
-
-```
-
-Ketika buat Objek Box maka bisa memasukan jenis data apapun karena bertipe Objek, semisal kita masukan data String atau Integer akan bisa, jika semisal kondisi salah masukan data dan data yang kita ambil tidak sesuai maka akan terjadi eror.  
-
-```Java
-/**
- * Contoh program
- */ 
-public class Main {
-	public static vodi main(String[] args) {
-		Box box = new Box();
-
-		// Maka dapat dimasukan data dengan tipe yang berbeda
-		boxInteger.add(10);
-		boxInteger.add("Jhoni");
-		boxInteger.add(true);
-
-		System.out.println(Arrays.toString(box.obj));
-	}
+	...
 }
 ```
-Output  
-```Terminal
-[10, Jhoni, true, null, null]
-```
+Maka class Box dapat menampung tipe apa saja, yang jadi masalah ketika proses verifikasi saat kompilasi, maka nilai kembalian akan bertipe Object. Otomatis memungkinkan terjadi kesalahan kondisi, dll.  
 
-#### 2.2 Kelas Box Generic
-Untuk format Generic pada class:  
+## 2. Generic
+Maka kita bisa gunakan generic untuk mengatasinya. Untuk format Generic pada class:  
 ```Java
 class nama<T1, T2, ..., Tn> {
 	...
@@ -86,29 +49,109 @@ Huruf T hanya sebagai simbol untuk tipe parameter dari kelas itu, Generic disimb
   */
 public class Box<T> {
 	// T untuk tipe
-	private T[] type;
-	private int index = 0;
+	private T data;
 
-	public Box() {
-		type = new T[10];
+	public Box(T value) {
+		data = value;
 	}
 
-	public void set(T[] t) {
-		type = t;
+	public T get() {
+		return data;
+	}
+	...
+}
+```
+Agar mudah dipahami semisal kita membuat objek Box dengan tipe Integer maka akan seperti ini.
+```Java
+public class Box<Integer> {
+	
+	private Integer data;
+
+	public Box(Integer value) {
+		data = value;
 	}
 
-	public void add(T t) {
-		type[index++] = t;
+	public Integer get() {
+		return data;
+	}
+	...
+}
+```
+## 3. Penulisan Tipe Generic
+Penulisan Tipe Generic mengikuti standar Java, ditulis dengan huruf kapital.  
+
+- E : Elemen
+- K : Key/Kunci
+- N : Number/Bilangan
+- T : Type/Tipe
+- V : Value/Nilai
+- S,U,V etc. - 2nd, 3rd, 4th, ...
+
+## 4. Pembuatan Generic
+Pada saat pembuatan objek generic, memasukan tipe data disebut dengan ***generic type invocation***, yaitu mengganti pada huruf T dengan tipe data objek (Integer, Double, dll).  
+```Java
+Box<Integer> box;
+```
+***"Istilah Tipe Parameter & Tipe Argumen: kebanyakan developer
+Menggunakan istilah tipe parameter & tipe argumen, tipe parameter
+adalah jenis tipe generic dari parameter Kotak<T>, jika tipe argumen
+adalah tipe objek dari argumen Kotak<String>"***  
+
+## 5. Diamond
+Di Java SE > 7 tidak perlu menulis tipe argumen pada bagian constructor pembuatan objek generic, hanya menulis simbol generic (<>), ini disebut dengan ***diamond.***
+```Java
+/**
+ * Contoh Diamond
+ */ 
+// Tanpa diamond Java SE < 7
+Box<String> boxString = new Box<String>(); 
+
+// Dengan diamond Java SE > 7
+Box<String> boxString = new Box<>(); 
+```
+
+## 6. Beberapa Tipe Parameter
+Tipe Parameter Generic bisa lebih dari 1 dan bisa bertipe sama. Gunakan tanda ( , ) setelah tipe pertama, jika nama tipe parameter sama maka nama harus beda. Ingat simbol pada parameter hanyalah seperti nama variabel.  
+```Java
+/**
+ * Contoh Multi Tipe Parameter Berbeda
+ * @param K	Untuk key/kunci, bertipe nilai
+ * @param V	Untuk value/nilai, bertipe karakter/string
+ */ 
+class Person<K, V> {
+	private K noHP;
+	private V name;
+
+	public Person(K k, V v) {
+		this.noHP = k; 
+		this.name = v;
 	}
 
-	public T get(int index) {
-		return type[index];
+	public void show() {
+		System.out.println(this.noHP);
+		System.out.println(this.name);
+	}
+}
+
+// Main Program
+public class MultipleParameter {
+	public static void main (String[] args) {
+		Person<Integer, String> person1 = new Person<>(08151213, “Joni”);
+		person1.show();
 	}
 }
 ```
 
-## Tipe Raw
-Tipe Raw adalah nama dari class atau interface tanpa tipe parameter. Sebagai contoh dengan class Box.
+## 7. Subtitute Parameter
+Pada tipe parameter generic bisa dimasukan Objek lain seperti memasukan objek Stack, ArrayList, atau objek lain.
+```Java
+Person<String, Stack<Integer>> p2 = new Person<>("Jammy", new Stack<Integer>());
+
+...
+```
+
+## 8. Tipe Mentah
+Tipe mentah (Raw Types) adalah jenis class atau interface generic tanpa tipe parameter. Sebagai contoh dengan class Box.
 ```Java
 public class Box<T> {
     public void set(T t) { /* ... */ }
@@ -119,25 +162,114 @@ Jika membuat objek generic seperti biasa akan seperti ini.
 ```Java
 	Box<Integer> intBox = new Box<>();
 ```
-Sedangkan yang disebut ***Raw Type*** adalah kita tidak memberikan tipe parameter apapun.
+Sedangkan yang disebut ***Raw Types*** adalah kita tidak memberikan tipe parameter apapun.
 ```Java
 	Box rawBox = new Box();
 ```
-Ini berati Box adalah tipe raw dari Box<T>, jika non-generic class atau interface bukan tipe raw.
+Ini berati Box adalah tipe raw dari Box<T>, jika non-generic class atau interface bukan tipe mentah.
+Akan terjadi ***Warnings*** jika menetapkan objek dari tipe mentah ke tipe generic atau sebaliknya.
+```Java
+Box rawBox = new Box();           // Tipe mentah
+Box<Integer> intBox = rawBox;     // warning: unchecked conversion
 
-## Type Inference
+// ===
 
-## Wildcards
+Box<String> stringBox = new Box<>();
+Box rawBox = stringBox;
+rawBox.set(8);  // warning: unchecked invocation to set(T)
+```
+
+## 9. Generic Method
+Fungsi atau ***Method*** statik/non-statik dapat dibuat menjadi generic disebut ***Generic Method*** yang memiliki tipe parameter tersendiri. Untuk formatnya:
+```Java
+...
+	public static <T> print(T data) {
+		System.out.println(data);
+	}
+
+	// Juga bisa berbagai tipe parameter.
+	public static <K, V> some() {
+		...
+	}
+...
+```
+
+## 10. Bounded Type Parameter
+Membatasi tipe parameter pada tipe tertentu, semisal hanya mengijinkan tipe data dari ***Number***.
+```Java
+// Format
+... <T,... extends class/interface> tipe_return ...
+```
+Contoh fungsi isEvenNumber(x), fungsi mengecek apakah nilai yang dimasukan nilai genap?
+```Java
+...
+	public static <T extends Number> boolean isEvenNumber(T val) {
+		Number n = val;
+		return (int)n % 2 == 0;
+	}
+```
+#### Banyak Tipe Parameter
+Untuk jumlah tipe parameter bisa lebih dari satu, tetapi harus urut sesuai tingkatan jika tidak akan eror.
+```Java
+// Format
+... <T extends class/interface & class/interface & ... > tipe_return ...
+```
+
+## 11. Generic Method & Bounded Types
+Bouded Types sering digunakan untuk membuat algoritma yang generic. Contoh fungsi membandingkan nilai pada array dengan nilai masukan.
+```Java
+public static <T> int countGreaterThan(T[] anArray, T elem) {
+	int count = 0;
+	for (T e : anArray)
+		if (e > elem)  // eror kompilasi
+					   // Hanya untuk tipe primitif
+			++count;
+	return count;
+}
+```
+Untuk solusinya kita buat interface Comparable.
+```Java
+public interface Comparable<T> {
+    public int compareTo(T o);
+}
+```
+Maka fungsi akan seperti ini.
+```Java
+public static <T extends Comparable<T>> int countGreaterThan(T[] anArray, T elem) {
+    int count = 0;
+    for (T e : anArray)
+        if (e.compareTo(elem) > 0)
+            ++count;
+    return count;
+}
+```
+
+## 12. Generic, Inheritance, Subtype
+Generic juga dapat memasukan objek turunan (inheritance). Contoh membuat objek Box tipe Number maka kita bisa memasukan data turunan Number (Integer, Double, dll).
+```Java
+Box<Number> box = new Box<Number>();
+box.add(new Integer(10));   // OK
+box.add(new Double(10.1));  // OK
+```
+Lalu coba kita buat fungsi yang menerima tipe Box<Number>.
+```Java
+public void boxTest(Box<Number> n) { /* ... */ }
+```
+Maka yang dapat kita masukan hanya Box<Number>, jika memasukan Box<Integer>, Box<Double>, otomatis tidak bisa karena Box<Integer> atau Box<Double> bukan turunan Box<Number>.  
+
+![Is](resource/img/img-1.png)
+
+## 13. Wildcards
 Pada Generic, simbol tanda tanya (?) disebut ***Wildcards*** yang berati tipe tidak diketahui. Wildcards dapat dipakai di tipe parameter, field, tipe kembalian.  
 
-#### Upper Bounded Wildcards
-Membatasi tipe data tertentu pada tipe parameter, semisal tipe data bilangan seperti Integer, Double, dll. Untuk deklarasi upper-bounded wildcards dengan simbol (?) diikuti ***extends*** lalu nama class/interface. Untuk formatnya:
+## 14. Upper Bounded Wildcards
+Membatasi tipe data tertentu pada tipe parameter, semisal tipe data bilangan seperti Integer, Double, dll. Digunakan pada tipe parameter, berbeda dengan Bounded Types Parameter.
 ```Java
 	...<? extends class/interface> ...
 ```
 Sebagai contoh kita buat fungsi penjumlahan dari List tipe Number.
 ```Java
-public double sumOfList(List<? extends Number) list) {
+public double sumOfList(List<? extends Number> list) {
 	double result = 0.0d;
 	for(Number e : list) {
 		result += e;
@@ -158,9 +290,9 @@ Output:
 600
 32,1
 ```
-#### Unbounded Wildcards
-Digunakan ketika ingin menerima tipe data yang umum seperti objek, gunakan simbol (?)
-pada tipe generic maka disebut unknown type/tipe tidak diketahui. Ini sering
+
+## 15. Unbounded Wildcards
+Digunakan ketika ingin menerima tipe data yang umum seperti objek, gunakan simbol (?). Pada tipe generic maka disebut unknown type/tipe tidak diketahui. Ini sering
 diimplementasikan pada fungsi yang bersifat umum, seperti fungsi print data list.  
 Contoh membuat fungsi menampilkan data list dengan tipe data parameter Object.  
 ```Java
@@ -171,10 +303,7 @@ Contoh membuat fungsi menampilkan data list dengan tipe data parameter Object.
 		System.out.println();
 	}
 ```
-Otomatis fungsi tersebut bisa berkerja untuk tipe data ***Object*** dan ***Subtype*** nya.
-Tetapi yang jadi masalah ketika kita masukan tipe Object seperti ***Integer***, ***Double***,
-***String***, dll, karena bukan ***subtype*** dari ***Object***. Maka ganti dengan (?) otomatis
-tipe data jenis apapaun akan bisa diterima.  
+Otomatis fungsi tersebut bisa berkerja untuk tipe data ***Object*** dan ***Subtype*** nya. Tetapi yang jadi masalah ketika kita masukan tipe Object seperti ***Integer***, ***Double***, ***String***, dll, karena bukan ***subtype*** dari ***Object***. Maka ganti dengan (?) otomatis tipe data jenis apapaun akan bisa diterima.  
 ```Java
 	public static void printList(List<?> list) {
 		for(Object e : list) {
@@ -197,10 +326,32 @@ Output:
 	100 200 300 400
 ```
 
+## 16. Lower Bounded Wildcards
+Jika Upper Bounded adalah turunan dari tipe tersebut, maka Lower Bounded adalah supertype/parent dari tipe tersebut. Semisal hanya ingin supertype dari tipe Integer maka otomatis tipe yang diijinkan dalah Integer, Number, Object.
+```Java
+... <? super class/interface> ...
+```
+Contoh sebuah fungsi yang memasukan nilai ke objek dari input parameter.
+```Java
+public static void addInteger(List<? super Integer> list) {
+	for(int i = 0; i < 10; i++) {
+		list.add(i);
+	}
+}
+```
+Uji dengan memasukan objek List.
+```Java
+List<Integer> list1 = new ArrayList<Integer>();
+Utility.addInteger(list1);
 
-#### Lower Bounded Wildcards
+System.out.println(list1.toString());	
+```
+Output.
+```Bash
+[0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+```
 
-#### Wildcards and Subtyping
+## 17. Wildcards and Subtyping
 Wildcards juga dapat digunakan untuk membuat hubungan antara ***class*** & ***interface***.
 Sebagai contoh  
 
