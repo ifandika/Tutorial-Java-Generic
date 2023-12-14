@@ -32,11 +32,54 @@ public class Box {
 	...
 }
 ```
-Maka class Box dapat menampung tipe apa saja, yang jadi masalah ketika proses verifikasi saat kompilasi, maka nilai kembalian akan bertipe Object. Otomatis memungkinkan terjadi kesalahan kondisi, dll.  
+Maka class Box dapat menampung tipe apa saja, yang jadi masalah ketika proses verifikasi saat kompilasi, maka nilai kembalian akan bertipe Object. Otomatis memungkinkan terjadi kesalahan kondisi, dll. Misal kita masukan nilai Integer pada Box Object, lalu kita ambil nilai untuk kita bandingkan pada sebuah kondisi jika data tersebut > 100.
+```Java
+BoxObj boxObj = new BoxObj(200);
+
+if(boxObj.get() > 100) {	// Eror
+	System.out.println("greater than 100");
+}
+```
+Ouput.
+```Bash
+Main.java:36: error: bad operand types for binary operator '>'
+                if(boxObj.get() > 100) {
+                                ^
+  first type:  Object
+  second type: int
+```
+Pada contoh di atas akan eror karena nilai kembalian dari fungsi get() adalah Object. Maka kita bisa gunakan generic untuk mengatasinya, contoh class Box bertipe Generic.
+```Java
+class BoxGeneric<T> {
+	private T data;
+
+	public BoxGeneric(T data) {
+		this.data = data;
+	}
+
+	public T get() {
+		return this.data;
+	}
+}
+```
+Lalu kita coba buat objeknya dan uji dengan kondisi (data > 100).
+```Java
+BoxGeneric<Integer> bg = new BoxGeneric<Integer>(500); // Box bertipe Integer
+
+if(bg.get() > 100) {
+	System.out.println("greater than 100");
+}
+```
+Output.
+```Bash
+greater than 100
+```
+Tidak terjadi eror karena nilai kembalian akan bertipe Integer.
 
 ## 2. Generic
-Maka kita bisa gunakan generic untuk mengatasinya. Untuk format Generic pada class:  
+Untuk menandai sebuah class/interface/method menjadi generic cukup tambahan simbol (< tipe_parameter >), maka akan menjadi generic.
 ```Java
+// Format
 class nama<T1, T2, ..., Tn> {
 	...
 }
@@ -94,11 +137,11 @@ Box<Integer> box;
 ```
 ***"Istilah Tipe Parameter & Tipe Argumen: kebanyakan developer
 Menggunakan istilah tipe parameter & tipe argumen, tipe parameter
-adalah jenis tipe generic dari parameter Kotak<T>, jika tipe argumen
-adalah tipe objek dari argumen Kotak<String>"***  
+adalah jenis tipe generic dari parameter Box< T >, jika tipe argumen
+adalah tipe objek dari argumen Box< String >"***
 
 ## 5. Diamond
-Di Java SE > 7 tidak perlu menulis tipe argumen pada bagian constructor pembuatan objek generic, hanya menulis simbol generic (<>), ini disebut dengan ***diamond.***
+Di **Java SE > 7** tidak perlu menulis tipe argumen pada bagian constructor pembuatan objek generic, hanya menulis simbol generic (<>), ini disebut dengan ***diamond.***
 ```Java
 /**
  * Contoh Diamond
@@ -151,7 +194,7 @@ Person<String, Stack<Integer>> p2 = new Person<>("Jammy", new Stack<Integer>());
 ```
 
 ## 8. Tipe Mentah
-Tipe mentah (Raw Types) adalah jenis class atau interface generic tanpa tipe parameter. Sebagai contoh dengan class Box.
+Tipe mentah (Raw Types) adalah jenis objek generic yang tidak ditetapkan tipe datanya. Sebagai contoh dengan class Box.
 ```Java
 public class Box<T> {
     public void set(T t) { /* ... */ }
@@ -162,7 +205,7 @@ Jika membuat objek generic seperti biasa akan seperti ini.
 ```Java
 	Box<Integer> intBox = new Box<>();
 ```
-Sedangkan yang disebut ***Raw Types*** adalah kita tidak memberikan tipe parameter apapun.
+Sedangkan yang disebut ***Raw Types*** adalah kita tidak memberikan tipe argumen apapun.
 ```Java
 	Box rawBox = new Box();
 ```
@@ -207,6 +250,7 @@ Contoh fungsi isEvenNumber(x), fungsi mengecek apakah nilai yang dimasukan nilai
 		Number n = val;
 		return (int)n % 2 == 0;
 	}
+...
 ```
 #### Banyak Tipe Parameter
 Untuk jumlah tipe parameter bisa lebih dari satu, tetapi harus urut sesuai tingkatan jika tidak akan eror.
@@ -296,34 +340,34 @@ Digunakan ketika ingin menerima tipe data yang umum seperti objek, gunakan simbo
 diimplementasikan pada fungsi yang bersifat umum, seperti fungsi print data list.  
 Contoh membuat fungsi menampilkan data list dengan tipe data parameter Object.  
 ```Java
-	public static void printList(List<Object> list) {
-		for(Object e : list) {
-			System.out.print(e+" ");
-		}
-		System.out.println();
+public static void printList(List<Object> list) {
+	for(Object e : list) {
+		System.out.print(e+" ");
 	}
+	System.out.println();
+}
 ```
 Otomatis fungsi tersebut bisa berkerja untuk tipe data ***Object*** dan ***Subtype*** nya. Tetapi yang jadi masalah ketika kita masukan tipe Object seperti ***Integer***, ***Double***, ***String***, dll, karena bukan ***subtype*** dari ***Object***. Maka ganti dengan (?) otomatis tipe data jenis apapaun akan bisa diterima.  
 ```Java
-	public static void printList(List<?> list) {
-		for(Object e : list) {
-			System.out.print(e+" ");
-		}
-		System.out.println();
+public static void printList(List<?> list) {
+	for(Object e : list) {
+		System.out.print(e+" ");
 	}
+	System.out.println();
+}
 ```
 Maka fungsi bisa menerima tipe data selain ***Object***.  
 ```Java
-	List<String> lisA = List.of("Joni", "Frank", "Jammy");
-	List<Integer> listB = List.of(100,200,300,400);
+List<String> lisA = List.of("Joni", "Frank", "Jammy");
+List<Integer> listB = List.of(100,200,300,400);
 	
-	printList(listA);
-	printList(listB);
+printList(listA);
+printList(listB);
 ```
 Output:
-```Terminal
-	Joni Frank Jammy
-	100 200 300 400
+```Bash
+Joni Frank Jammy
+100 200 300 400
 ```
 
 ## 16. Lower Bounded Wildcards
@@ -358,11 +402,12 @@ Sebagai contoh
 - Membuat interface A  
 - Membuat class B dengan extends interface A  
 
-## Tipe Erasure
-Generic diperkenalkan pada Java guna mendukung kompilasi dan generic programming. Hal yang terjadi pada kompilasi ketika menggunakan generic.
+## 18. Tipe Erasure
+Generic diperkenalkan pada Java guna mendukung kompilasi dan generic programming. Yang dilakukan ***compiler*** ke ***generic*** adalah.
 
 - Mengganti semua tipe generic menjadi Object jika tipe unbounded.
 - Mengganti semua tipe generic menjadi tipe yang di tuju jika tipe generic bounded.
+
 #### Contoh pada tipe parameter
 **1. Contoh tipe unbounded**  
 Ada class generic bernama Node representasi node single linked list.
@@ -441,5 +486,8 @@ public class Node {
 }
 ```
 
-#### Contoh pada fungsi
+Hal ini juga berlaku untuk generic method.
+
+## 19. Bridge Method
+
 
